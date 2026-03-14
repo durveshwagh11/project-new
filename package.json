@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"pnpm dev:backend\" \"pnpm dev:frontend\"",
-    "dev:backend": "nx serve backend",
-    "dev:frontend": "nx serve frontend",
-    "dev:infra": "docker compose -f deployment/docker-compose.dev.yml up -d",
+    "start": "concurrently -n \"backend,frontend\" -c \"blue,green\" \"pnpm start:backend\" \"pnpm start:frontend\"",
+    "start:backend": "nx serve backend --watch",
+    "start:frontend": "nx serve frontend --watch",
+    "start:infra": "docker compose -f deployment/docker-compose.start.yml up -d",
     "build": "nx run-many -t build",
     "build:backend": "nx build backend",
     "build:frontend": "nx build frontend",
@@ -30,6 +30,8 @@
     "@nestjs/core": "^11.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "axios": "^1.6.0",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.0",
     "zone.js": "~0.15.0"
@@ -58,6 +60,7 @@
     "@swc/jest": "~0.2.38",
     "@types/jest": "^30.0.0",
     "@types/node": "20.19.9",
+    "concurrently": "^9.0.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jest": "^30.0.2",
@@ -70,7 +73,6 @@
     "tslib": "^2.3.0",
     "typescript": "~5.9.0",
     "typescript-eslint": "^8.40.0",
-    "concurrently": "^9.0.0",
     "webpack-cli": "^5.1.4"
   }
 }
