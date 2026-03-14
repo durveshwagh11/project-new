@@ -1,21 +1,20 @@
 {
   "compilerOptions": {
-    "composite": true,
-    "declarationMap": true,
-    "emitDeclarationOnly": true,
-    "importHelpers": true,
-    "isolatedModules": true,
-    "lib": ["es2022"],
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
-    "noEmitOnError": true,
-    "noFallthroughCasesInSwitch": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "strict": true,
+    "skipLibCheck": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
-    "noUnusedLocals": true,
-    "skipLibCheck": true,
-    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "importHelpers": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
     "target": "es2022",
-    "customConditions": ["@durvesh-project/source"]
+    "lib": ["es2022", "dom"],
+    "paths": {
+      "@durvesh-nx/shared-types": ["libs/shared/types/src/index.ts"],
+      "@durvesh-nx/backend-common": ["libs/backend-common/src/index.ts"]
+    }
   }
 }

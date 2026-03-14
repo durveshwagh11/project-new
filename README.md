@@ -1,82 +1,250 @@
-# DurveshProject
+# durvesh-nx
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+NX monorepo with an Angular 21 frontend, NestJS backend, Docker deployment, and GitHub Actions CI/CD.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+---
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## Project Structure
 
-## Finish your CI setup
-
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/5CaXu1bKvl)
-
-
-## Run tasks
-
-To run the dev server for your app, use:
-
-```sh
-npx nx serve durvesh-project
+```
+durvesh-nx/
+├── apps/
+│   ├── frontend/                        # Angular 21 (standalone, lazy-loaded routes)
+│   │   ├── src/
+│   │   │   ├── app/
+│   │   │   │   ├── app.component.ts     # Root shell with <router-outlet>
+│   │   │   │   ├── app.config.ts        # provideRouter, provideHttpClient
+│   │   │   │   ├── app.routes.ts        # Lazy routes
+│   │   │   │   ├── core/
+│   │   │   │   │   └── services/
+│   │   │   │   │       └── auth.service.ts
+│   │   │   │   └── features/
+│   │   │   │       ├── home/            # HomeComponent
+│   │   │   │       └── auth/
+│   │   │   │           ├── login/       # LoginComponent
+│   │   │   │           └── register/    # RegisterComponent
+│   │   │   ├── index.html
+│   │   │   └── styles.scss
+│   │   ├── project.json                 # NX build / serve / test targets
+│   │   ├── proxy.conf.json             # Dev proxy: /api → :3000
+│   │   └── Dockerfile
+│   │
+│   └── backend/                         # NestJS (port 3000, prefix /api)
+│       ├── src/
+│       │   ├── app/
+│       │   │   ├── app.module.ts
+│       │   │   ├── app.controller.ts    # GET /api, GET /api/health
+│       │   │   └── app.service.ts
+│       │   └── main.ts
+│       ├── webpack.config.js
+│       ├── package.json
+│       └── Dockerfile
+│
+├── libs/
+│   ├── shared/
+│   │   └── types/                       # Shared TypeScript interfaces (used by all apps)
+│   │       └── src/
+│   │           ├── lib/
+│   │           │   ├── user.types.ts    # User, LoginDto, RegisterDto, AuthToken
+│   │           │   └── api-response.types.ts
+│   │           └── index.ts
+│   └── backend-common/                  # Shared NestJS building blocks
+│       └── src/
+│           ├── lib/
+│           │   ├── guards/jwt-auth.guard.ts
+│           │   ├── decorators/
+│           │   │   ├── public.decorator.ts
+│           │   │   └── current-user.decorator.ts
+│           │   ├── interceptors/logging.interceptor.ts
+│           │   └── common.module.ts
+│           └── index.ts
+│
+├── deployment/
+│   ├── docker-compose.yml               # Production stack
+│   ├── docker-compose.dev.yml           # Dev infra only (Postgres + pgAdmin)
+│   └── nginx/
+│       └── nginx.conf                   # Routes /api → backend, / → frontend
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml                       # Lint → Test → Build → Docker push (main only)
+│
+├── tsconfig.base.json                   # Shared TS config + path aliases
+├── tsconfig.json                        # Workspace references
+├── nx.json                              # NX plugins and target defaults
+├── package.json                         # Scripts + all dependencies
+└── pnpm-workspace.yaml                  # Workspace packages: apps/* + libs/**
 ```
 
-To create a production bundle:
+---
 
-```sh
-npx nx build durvesh-project
+## Tech Stack
+
+| Layer      | Technology                        |
+|------------|-----------------------------------|
+| Frontend   | Angular 21, standalone components |
+| Backend    | NestJS 11, Webpack                |
+| Language   | TypeScript 5.9                    |
+| Monorepo   | NX 22, pnpm workspaces            |
+| Database   | PostgreSQL 16                     |
+| Proxy      | Nginx (production)                |
+| Containers | Docker, Docker Compose            |
+| CI/CD      | GitHub Actions                    |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 20+
+- pnpm 9+
+- Docker + Docker Compose
+
+### Install dependencies
+
+```bash
+pnpm install
 ```
 
-To see all available targets to run for a project, run:
+---
 
-```sh
-npx nx show project durvesh-project
+## Commands
+
+### Development
+
+Start Postgres locally (required by the backend):
+
+```bash
+pnpm dev:infra
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+Start backend and frontend together with hot reload:
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Add new projects
-
-While you could add new projects to your workspace manually, you might want to leverage [Nx plugins](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) and their [code generation](https://nx.dev/features/generate-code?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) feature.
-
-Use the plugin's generator to create new projects.
-
-To generate a new application, use:
-
-```sh
-npx nx g @nx/node:app demo
+```bash
+pnpm dev
 ```
 
-To generate a new library, use:
+Or start them individually:
 
-```sh
-npx nx g @nx/node:lib mylib
+```bash
+pnpm dev:backend    # NestJS  → http://localhost:3000/api
+pnpm dev:frontend   # Angular → http://localhost:4200
 ```
 
-You can use `npx nx list` to get a list of installed plugins. Then, run `npx nx list <plugin-name>` to learn about more specific capabilities of a particular plugin. Alternatively, [install Nx Console](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) to browse plugins and generators in your IDE.
+> The Angular dev server proxies `/api/*` to the backend automatically via `proxy.conf.json`.
 
-[Learn more about Nx plugins &raquo;](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) | [Browse the plugin registry &raquo;](https://nx.dev/plugin-registry?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
+### Build
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+```bash
+pnpm build            # build all apps
+pnpm build:backend    # build backend only  → dist/apps/backend
+pnpm build:frontend   # build frontend only → dist/apps/frontend
+```
 
-## Install Nx Console
+---
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+### Production (Docker)
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Build images and start the full stack:
 
-## Useful links
+```bash
+pnpm prod
+```
 
-Learn more:
+Services started:
 
-- [Learn more about this workspace setup](https://nx.dev/nx-api/node?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+| Service  | Internal port | Exposed    |
+|----------|---------------|------------|
+| nginx    | 80            | :80        |
+| frontend | 80            | via nginx  |
+| backend  | 3000          | via nginx  |
+| postgres | 5432          | internal   |
 
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Stop everything:
+
+```bash
+pnpm prod:down
+```
+
+---
+
+### Other
+
+```bash
+pnpm test    # run all tests
+pnpm lint    # lint all apps
+```
+
+---
+
+## API Endpoints (Backend)
+
+Base URL in dev: `http://localhost:3000/api`
+
+| Method | Path         | Description  |
+|--------|--------------|--------------|
+| GET    | /api         | Hello message |
+| GET    | /api/health  | Health check  |
+
+---
+
+## Shared Libraries
+
+Import shared types in any app or service:
+
+```ts
+import type { User, LoginDto, ApiResponse } from '@durvesh-nx/shared-types';
+```
+
+Import shared NestJS guards/interceptors:
+
+```ts
+import { CommonModule, JwtAuthGuard, Public } from '@durvesh-nx/backend-common';
+```
+
+Path aliases are configured in `tsconfig.base.json`.
+
+---
+
+## CI/CD (GitHub Actions)
+
+Workflow file: `.github/workflows/ci.yml`
+
+| Job    | Trigger        | Steps                                 |
+|--------|----------------|---------------------------------------|
+| ci     | push / PR      | lint → test → build → upload artifacts |
+| docker | push to `main` | build & push images to GHCR           |
+
+Docker images are pushed to GitHub Container Registry (`ghcr.io`) on every merge to `main`.
+
+---
+
+## Environment Variables
+
+Create a `.env` file at the project root for production overrides:
+
+```env
+JWT_SECRET=your-secret-here
+```
+
+Backend reads from environment at runtime:
+
+| Variable       | Default                                          | Description          |
+|----------------|--------------------------------------------------|----------------------|
+| PORT           | 3000                                             | NestJS port          |
+| FRONTEND_URL   | http://localhost:4200                            | CORS origin          |
+| DATABASE_URL   | postgresql://postgres:postgres@postgres:5432/... | Postgres connection  |
+| JWT_SECRET     | change-me-in-production                          | JWT signing secret   |
+
+---
+
+## Adding a New Backend Service
+
+1. Copy `apps/backend/` → `apps/my-service/`
+2. Update `name` in `apps/my-service/package.json` → `@durvesh-nx/my-service`
+3. Update port in `apps/my-service/src/main.ts`
+4. Add a service block in `deployment/docker-compose.yml`
+5. Add a `location /my-prefix/` block in `deployment/nginx/nginx.conf`

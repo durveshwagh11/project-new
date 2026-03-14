@@ -3,11 +3,8 @@
   "compileOnSave": false,
   "files": [],
   "references": [
-    {
-      "path": "./apps/durvesh-project-e2e"
-    },
-    {
-      "path": "./apps/durvesh-project"
-    }
+    { "path": "./apps/frontend" },
+    { "path": "./apps/api-gateway" },
+    { "path": "./apps/auth-service" }
   ]
 }

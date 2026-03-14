@@ -4,12 +4,12 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Debug @durvesh-project/durvesh-project with Nx",
+      "name": "Debug api-gateway with Nx",
       "runtimeExecutable": "pnpm exec",
       "runtimeArgs": [
         "nx",
         "serve",
-        "@durvesh-project/durvesh-project"
+        "api-gateway"
       ],
       "env": {
         "NODE_OPTIONS": "--inspect=9229"
@@ -21,7 +21,7 @@
       ],
       "sourceMaps": true,
       "outFiles": [
-        "${workspaceFolder}/apps/durvesh-project/dist/**/*.(m|c|)js",
+        "${workspaceFolder}/dist/apps/api-gateway/**/*.(m|c|)js",
         "!**/node_modules/**"
       ]
     }

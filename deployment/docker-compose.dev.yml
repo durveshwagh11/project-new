@@ -1,0 +1,38 @@
+version: '3.9'
+
+# Development compose — only infrastructure services.
+# Run frontend/backends locally with hot-reload via:
+#   pnpm start:frontend
+#   pnpm start:api-gateway
+#   pnpm start:auth-service
+
+services:
+  # --- PostgreSQL ---
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-dev
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: durvesh_db
+    volumes:
+      - postgres-dev-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # --- pgAdmin (optional DB GUI) ---
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin-dev
+    ports:
+      - '5050:80'
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@durvesh.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+volumes:
+  postgres-dev-data:
