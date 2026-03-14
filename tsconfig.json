@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compileOnSave": false,
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/durvesh-project-e2e"
+    },
+    {
+      "path": "./apps/durvesh-project"
+    }
+  ]
+}
