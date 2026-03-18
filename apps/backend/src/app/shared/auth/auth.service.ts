@@ -6,8 +6,6 @@ import * as bcrypt from 'bcrypt';
 export class AuthService {
 	private readonly databaseService = new DatabaseService();
 
-	constructor() {}
-
 	async login(email: string, password: string) {
 		if (!email || !password) {
 			return 'Email and password are required';

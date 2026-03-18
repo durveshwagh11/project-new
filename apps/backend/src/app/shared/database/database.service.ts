@@ -1,7 +1,7 @@
 import { getPool } from './db';
 
 export class DatabaseService {
-	async query(text: string, params?: any[]) {
+	async query(text: string, params?: unknown[]) {
 		const client = await getPool().connect();
 
 		try {
@@ -15,7 +15,7 @@ export class DatabaseService {
 		}
 	}
 
-	async insert(table: string, data: Record<string, any>) {
+	async insert(table: string, data: Record<string, unknown>) {
 		// ⚠️ whitelist tables (IMPORTANT)
 		const allowedTables = ['users', 'jobs'];
 
