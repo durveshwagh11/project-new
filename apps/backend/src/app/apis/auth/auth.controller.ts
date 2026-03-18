@@ -10,4 +10,9 @@ export class AuthController {
 	login(@Body() loginInfo: AuthDto) {
 		return this.authService.login(loginInfo.email, loginInfo.password);
 	}
+
+	@Post('signup')
+	signup(@Body() signUpData: AuthDto) {
+		return this.authService.signup(signUpData.email, signUpData.password);
+	}
 }
