@@ -1,25 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../database/database.service';
-import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class AuthService {
-	private readonly logger = new Logger(AuthService.name);
+	private readonly databaseService = new DatabaseService();
 
-	constructor(private databaseService: DatabaseService) {}
+	constructor() {}
 
 	async login(email: string, password: string) {
 		if (!email || !password) {
 			return 'Email and password are required';
 		}
 
-		const insertQry = 'INSERT INTO users (username, password) VALUES ($1, $2) RETURNING *';
-		this.logger.log(`Executing query: ${insertQry} with email: ${email}`);
-		const result = await this.databaseService.query(insertQry, [email, password]);
+		const users = await this.databaseService.query(
+			'SELECT * FROM user_dummy WHERE email = $1 ',
+			[email],
+		);
 
-		this.logger.log(`Query result: ${JSON.stringify(result)}`);
+		console.log(`Queried users: ${JSON.stringify(users)}`);
 
-		if (result.length === 0) {
+		if (users.length === 0) {
 			return 'Invalid email or password';
 		}
 
