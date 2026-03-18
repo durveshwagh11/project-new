@@ -1,4 +1,6 @@
 packages:
   - "libs/**"
+allowBuilds:
+  bcrypt: false
 
 autoInstallPeers: true
