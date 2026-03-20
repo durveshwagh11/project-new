@@ -1,5 +1,7 @@
+import { Injectable } from '@nestjs/common';
 import { getPool } from './db';
 
+@Injectable()
 export class DatabaseService {
 	async query(text: string, params?: unknown[]) {
 		const client = await getPool().connect();
