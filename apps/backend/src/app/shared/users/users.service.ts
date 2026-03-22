@@ -11,4 +11,9 @@ export class UsersService {
 
 		return users;
 	}
+
+	async findByEmail(email: string) {
+		const rows = await this.databaseService.query('SELECT id, email, password FROM users WHERE email = $1', [email]);
+		return rows[0] ?? null;
+	}
 }
