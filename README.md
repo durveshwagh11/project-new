@@ -148,22 +148,81 @@ Docker images are pushed to GitHub Container Registry (`ghcr.io`) on every merge
 
 ---
 
+## Database Migrations
+
+Run migrations to set up the database schema:
+
+```bash
+# Development (uses config/backend/.env)
+pnpm migrate:dev
+
+# Production (uses environment variables)
+export DATABASE_URL=postgresql://user:pass@host:5432/dbname
+pnpm migrate:prod
+```
+
+Migration files are located in `apps/backend/src/migrations/`. See [Migration README](apps/backend/src/migrations/README.md) for details.
+
+---
+
 ## Environment Variables
 
-Create a `.env` file at the project root for production overrides:
+Create a `.env` file at the project root for production overrides (use `.env.example` as template):
 
 ```env
-JWT_SECRET=your-secret-here
+DATABASE_URL=postgresql://user:pass@host:5432/dbname
+JWT_ACCESS_SECRET=your-secure-secret-minimum-32-chars
+JWT_REFRESH_SECRET=your-secure-secret-minimum-32-chars
 ```
 
 Backend reads from environment at runtime:
 
-| Variable       | Default                                          | Description          |
-|----------------|--------------------------------------------------|----------------------|
-| PORT           | 3000                                             | NestJS port          |
-| FRONTEND_URL   | http://localhost:4200                            | CORS origin          |
-| DATABASE_URL   | postgresql://postgres:postgres@postgres:5432/... | Postgres connection  |
-| JWT_SECRET     | change-me-in-production                          | JWT signing secret   |
+| Variable             | Default                                          | Description                |
+|----------------------|--------------------------------------------------|----------------------------|
+| DATABASE_URL         | postgresql://postgres:postgres@localhost:5432/... | Postgres connection string |
+| DB_HOST              | localhost                                        | Database host (alternative) |
+| DB_PORT              | 5432                                             | Database port (alternative) |
+| DB_USER              | postgres                                         | Database user (alternative) |
+| DB_PASSWORD          | -                                                | Database password (alternative) |
+| DB_NAME              | durvesh_project                                  | Database name (alternative) |
+| JWT_ACCESS_SECRET    | -                                                | JWT access token secret    |
+| JWT_REFRESH_SECRET   | -                                                | JWT refresh token secret   |
+| JWT_ACCESS_EXPIRES_IN| 1d                                               | Access token expiration    |
+| JWT_REFRESH_EXPIRES_IN| 7d                                              | Refresh token expiration   |
+| PORT                 | 3000                                             | NestJS port                |
+| FRONTEND_URL         | http://localhost:4200                            | CORS origin                |
+| NODE_ENV             | development                                      | Environment mode           |
+
+**Note:** Use `DATABASE_URL` for production, or individual `DB_*` variables for development.
+
+---
+
+## Deployment
+
+### Local Production Build
+
+Test the full production stack locally:
+
+```bash
+pnpm prod      # starts all services with Docker Compose
+pnpm prod:down # stops all services
+```
+
+### AWS Deployment
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for comprehensive AWS deployment guides covering:
+
+- **ECS Fargate** (recommended for containers)
+- **App Runner** (easiest, fully managed)
+- **Elastic Beanstalk** (Docker Compose support)
+
+Includes:
+- Infrastructure setup
+- Database migration steps
+- Environment configuration
+- Security checklist
+- Monitoring & logging
+- CI/CD integration
 
 ---
 

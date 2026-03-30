@@ -77,29 +77,19 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: apps/frontend/Dockerfile
+          file: deployment/docker/frontend/Dockerfile
           push: true
           tags: ghcr.io/${{ github.repository }}/frontend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Build & push api-gateway
+      - name: Build & push backend
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: apps/api-gateway/Dockerfile
+          file: deployment/docker/backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository }}/api-gateway:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-      - name: Build & push auth-service
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: apps/auth-service/Dockerfile
-          push: true
-          tags: ghcr.io/${{ github.repository }}/auth-service:latest
+          tags: ghcr.io/${{ github.repository }}/backend:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 

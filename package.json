@@ -14,7 +14,10 @@
     "prod:down": "docker compose -f deployment/docker-compose.yml down",
     "test": "nx run-many -t test",
     "lint": "nx run-many -t lint",
-    "format": "prettier --write \"apps/backend/**/*.{js,ts,tsx,json,md,html,css,scss}\" \"apps/frontend/**/*.{js,ts,tsx,json,md,html,css,scss}\""
+    "format": "prettier --write \"apps/backend/**/*.{js,ts,tsx,json,md,html,css,scss}\" \"apps/frontend/**/*.{js,ts,tsx,json,md,html,css,scss}\"",
+    "migrate": "node --loader ts-node/esm apps/backend/scripts/migrate.ts",
+    "migrate:dev": "dotenv -e config/backend/.env -- pnpm migrate",
+    "migrate:prod": "pnpm migrate"
   },
   "private": true,
   "dependencies": {
@@ -71,6 +74,7 @@
     "@types/node": "20.19.9",
     "@types/pg": "^8.18.0",
     "concurrently": "^9.0.0",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jest": "^30.0.2",
